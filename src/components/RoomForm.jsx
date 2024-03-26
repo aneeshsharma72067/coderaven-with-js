@@ -1,8 +1,31 @@
 import React, { useState } from "react";
+import { v4 as uuid4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 const RoomForm = () => {
   const [roomId, setRoomId] = useState("");
   const [userName, setUserName] = useState("");
+
+  const navigate = useNavigate();
+
+  const createNewRoom = (e) => {
+    e.preventDefault();
+    const id = uuid4();
+    setRoomId(id);
+  };
+
+  const joinRoom = () => {
+    if (!roomId || !userName) {
+      return;
+    }
+
+    // Redirect
+    navigate(`/editor/${roomId}`, {
+      state: {
+        userName,
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col gap-3 p-8 rounded-lg w-4/5 md:w-2/5 md:min-w-[30rem] border border-none neuromorphism-bg bg-zinc-900">
@@ -17,6 +40,11 @@ const RoomForm = () => {
           placeholder="Enter your name"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              joinRoom();
+            }
+          }}
         />
         <input
           type="text"
@@ -24,10 +52,15 @@ const RoomForm = () => {
           value={roomId}
           onChange={(e) => setRoomId(e.target.value)}
           placeholder="Enter the room ID"
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              joinRoom();
+            }
+          }}
         />
         <button
           className="w-1/2 self-end bg-green-500 text-slate-900 border-none hover:bg-green-700"
-          //   onClick={joinRoom}
+          onClick={joinRoom}
         >
           Join
         </button>
@@ -38,7 +71,7 @@ const RoomForm = () => {
           <a
             href="#"
             className="text-green-400 duration-300 hover:underline"
-            // onClick={createNewRoom}
+            onClick={createNewRoom}
           >
             new room
           </a>
