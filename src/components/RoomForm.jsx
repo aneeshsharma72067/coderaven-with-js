@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuid4 } from "uuid";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const RoomForm = () => {
@@ -12,10 +13,12 @@ const RoomForm = () => {
     e.preventDefault();
     const id = uuid4();
     setRoomId(id);
+    toast.success("Created a new room");
   };
 
   const joinRoom = () => {
     if (!roomId || !userName) {
+      toast.error("Room Id & Username is required !!");
       return;
     }
 
@@ -25,6 +28,7 @@ const RoomForm = () => {
         userName,
       },
     });
+    toast.success("Joined room successfully");
   };
 
   return (
