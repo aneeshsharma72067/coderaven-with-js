@@ -78,7 +78,7 @@ const Room = () => {
         />
       </div>
       <div id="editor" className="flex-[0.8] h-full bg-[#282a36]">
-        <Editor />
+        <Editor socketRef={socketRef} roomId={roomId} />
       </div>
     </div>
   );
