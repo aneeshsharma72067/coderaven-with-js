@@ -5,7 +5,7 @@ import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/dracula.css";
-import "codemirror/mode/javascript/javascript.js";
+import "codemirror/mode/clike/clike";
 import "codemirror/addon/edit/matchbrackets";
 import { ACTIONS } from "../../actions";
 
@@ -16,10 +16,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     async function init() {
       if (editorRef.current) {
         codeRef.current = CodeMirror.fromTextArea(editorRef.current, {
-          mode: {
-            name: "javascript",
-            json: true,
-          },
+          mode: "text/x-c++src",
           theme: "dracula",
           lineNumbers: true,
           autofocus: true,
@@ -32,9 +29,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
       codeRef.current.on("change", (instance, changes) => {
         const { origin } = changes;
         const code = instance.getValue();
-
         onCodeChange(code);
-
         if (origin !== "setValue") {
           socketRef.current.emit(ACTIONS.CODE_CHANGE, {
             roomId,
