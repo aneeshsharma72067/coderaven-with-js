@@ -51,14 +51,17 @@ const Room = () => {
       socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, userName }) => {
         toast.success(`${userName} left the room`);
         setClients((prev) => {
-          return prev.filter((client) => {
-            client.socketId !== socketId;
-            console.log(clients);
-          });
+          return prev.filter((client) => client.socketId !== socketId);
         });
       });
+      console.log(clients);
     }
     init();
+    return () => {
+      socketRef.current.disconnect();
+      socketRef.current.off(ACTIONS.JOINED);
+      socketRef.current.off(ACTIONS.DISCONNECTED);
+    };
   }, []);
 
   if (!location.state) {
