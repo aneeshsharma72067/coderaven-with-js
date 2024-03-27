@@ -18,12 +18,10 @@ const getAllConnectedClients = (roomId) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("socket connected ", socket.id);
   socket.on(ACTIONS.JOIN, ({ roomId, userName }) => {
     userSocketMap[socket.id] = userName;
     socket.join(roomId);
     const clients = getAllConnectedClients(roomId);
-    // console.log(`Clients array : ${JSON.stringify(clients)}`);
     clients.forEach((client) => {
       io.to(client.socketId).emit(ACTIONS.JOINED, {
         clients,
@@ -33,8 +31,15 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on(ACTIONS.CODE_CHANGE, ({ roomId, code }) => {
+    socket.in(roomId).emit(ACTIONS.CODE_CHANGE, { code });
+  });
+
+  socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
+    io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
+  });
+
   socket.on("disconnecting", () => {
-    console.log(userSocketMap);
     const rooms = [...socket.rooms];
     rooms.forEach((roomId) => {
       socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
@@ -42,9 +47,7 @@ io.on("connection", (socket) => {
         userName: userSocketMap[socket.id],
       });
     });
-    console.log(userSocketMap);
     delete userSocketMap[socket.id];
-    console.log(userSocketMap);
     socket.leave();
   });
 });

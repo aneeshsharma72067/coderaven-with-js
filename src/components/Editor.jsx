@@ -9,13 +9,12 @@ import "codemirror/mode/javascript/javascript.js";
 import "codemirror/addon/edit/matchbrackets";
 import { ACTIONS } from "../../actions";
 
-const Editor = ({ socketRef, roomId }) => {
+const Editor = ({ socketRef, roomId, onCodeChange }) => {
   const editorRef = useRef(null);
   const codeRef = useRef(null);
   useEffect(() => {
     async function init() {
       if (editorRef.current) {
-        console.log("codemiror working");
         codeRef.current = CodeMirror.fromTextArea(editorRef.current, {
           mode: {
             name: "javascript",
@@ -31,26 +30,34 @@ const Editor = ({ socketRef, roomId }) => {
       }
 
       codeRef.current.on("change", (instance, changes) => {
-        console.log("changes", changes);
         const { origin } = changes;
         const code = instance.getValue();
+
+        onCodeChange(code);
+
         if (origin !== "setValue") {
           socketRef.current.emit(ACTIONS.CODE_CHANGE, {
             roomId,
             code,
           });
         }
-        console.log(code);
       });
+    }
+    init();
+  }, []);
 
+  useEffect(() => {
+    if (socketRef.current) {
       socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
         if (code !== null) {
           codeRef.current.setValue(code);
         }
       });
     }
-    init();
-  }, []);
+    return () => {
+      socketRef.current.off(ACTIONS.CODE_CHANGE);
+    };
+  }, [socketRef.current]);
   return (
     <div className="w-full h-full">
       <textarea

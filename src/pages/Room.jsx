@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 const Room = () => {
   const { roomId } = useParams();
   const socketRef = useRef(null);
+  const codeSyncRef = useRef(null);
+
   const location = useLocation();
   const reactNavigate = useNavigate();
   const [clients, setClients] = useState([]);
@@ -25,7 +27,6 @@ const Room = () => {
       socketRef.current.on("connect_failed", (err) => handleErrors(err));
 
       function handleErrors(err) {
-        console.log("Socket error", err);
         toast.error("Socket Connection failed, try again later !");
         reactNavigate("/");
       }
@@ -41,9 +42,12 @@ const Room = () => {
         ({ clients, userName, socketId }) => {
           if (userName !== location.state?.userName) {
             toast.success(`${userName} joined the room`);
-            console.log(`${userName} ${location.state?.userName}`);
           }
           setClients(clients);
+          socketRef.current.emit(ACTIONS.SYNC_CODE, {
+            code: codeSyncRef.current,
+            socketId,
+          });
         }
       );
 
@@ -54,7 +58,6 @@ const Room = () => {
           return prev.filter((client) => client.socketId !== socketId);
         });
       });
-      console.log(clients);
     }
     init();
     return () => {
@@ -78,7 +81,13 @@ const Room = () => {
         />
       </div>
       <div id="editor" className="flex-[0.8] h-full bg-[#282a36]">
-        <Editor socketRef={socketRef} roomId={roomId} />
+        <Editor
+          socketRef={socketRef}
+          roomId={roomId}
+          onCodeChange={(code) => {
+            codeSyncRef.current = code;
+          }}
+        />
       </div>
     </div>
   );

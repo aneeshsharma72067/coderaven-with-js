@@ -10,7 +10,7 @@ const AsideBar = ({ roomId, userName, clients }) => {
     navigator.clipboard
       .writeText(roomId)
       .then(() => {
-        toast.success("Room ID copied Successfully");
+        toast.success("Room ID has been copied to your clipboard");
       })
       .catch(() => console.log("error in copying"));
   };
