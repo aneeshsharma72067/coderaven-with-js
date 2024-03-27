@@ -3,14 +3,7 @@ import Client from "./Client";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-const AsideBar = ({ roomId }) => {
-  const [clients, setClients] = useState([
-    { socketId: 1, userName: "Aneesh Sharma" },
-    { socketId: 2, userName: "Nikhil Bhatnagar" },
-    { socketId: 3, userName: "Peter Parker" },
-    { socketId: 4, userName: "ROnalido" },
-  ]);
-
+const AsideBar = ({ roomId, userName, clients }) => {
   const navigate = useNavigate();
 
   const copyRoomId = () => {

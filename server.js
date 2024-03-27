@@ -22,12 +22,27 @@ io.on("connection", (socket) => {
   socket.on(ACTIONS.JOIN, ({ roomId, userName }) => {
     userSocketMap[socket.id] = userName;
     socket.join(roomId);
-    console.log(`${userName} joined the room ${roomId}`);
-
     const clients = getAllConnectedClients(roomId);
+    // console.log(`Clients array : ${JSON.stringify(clients)}`);
+    clients.forEach((client) => {
+      io.to(client.socketId).emit(ACTIONS.JOINED, {
+        clients,
+        userName,
+        socketId: client.socketId,
+      });
+    });
   });
-  socket.on(ACTIONS.DISCONNECTED, () => {
-    console.log("User Disconnected");
+
+  socket.on("disconnecting", () => {
+    const rooms = [...socket.rooms];
+    rooms.forEach((roomId) => {
+      socket.in(roomId).emit(ACTIONS.DISCONNECTED, {
+        socketId: socket.id,
+        userName: userSocketMap[socket.id],
+      });
+    });
+    delete userSocketMap[socket.id];
+    socket.leave();
   });
 });
 
