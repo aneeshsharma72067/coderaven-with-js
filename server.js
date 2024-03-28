@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import { ACTIONS } from "./actions.js";
+
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -12,6 +12,15 @@ const PORT = process.env.PORT || 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const ACTIONS = {
+  JOIN: "join",
+  JOINED: "joined",
+  DISCONNECTED: "disconnected",
+  CODE_CHANGE: "code-change",
+  SYNC_CODE: "sync-code",
+  LEAVE: "leave",
+};
 
 app.use(express.static("dist"));
 app.use((req, res, next) => {
