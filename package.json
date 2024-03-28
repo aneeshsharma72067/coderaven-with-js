@@ -15,7 +15,6 @@
    "codemirror": "^5.65.16",
     "express": "^4.19.2",
     "react": "^18.2.0",
-    "react-codemirror": "^1.0.0",
     "react-codemirror2": "^7.3.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
