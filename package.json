@@ -12,9 +12,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "express": "^4.19.2",   
+   "codemirror": "^5.65.16",
+    "express": "^4.19.2",
+    "react": "^18.2.0",
+    "react-codemirror": "^1.0.0",
+    "react-codemirror2": "^7.3.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.22.3",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "uuid": "^9.0.1",
+    "vite": "^5.2.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",
